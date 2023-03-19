@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "I2CLCD80", "I2CLCD80\I2CLCD80.cproj", "{2F4805F4-6D0A-4B1D-AB6F-DBEB409D8D16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F4805F4-6D0A-4B1D-AB6F-DBEB409D8D16}.Debug|AVR.ActiveCfg = Debug|AVR
+		{2F4805F4-6D0A-4B1D-AB6F-DBEB409D8D16}.Debug|AVR.Build.0 = Debug|AVR
+		{2F4805F4-6D0A-4B1D-AB6F-DBEB409D8D16}.Release|AVR.ActiveCfg = Release|AVR
+		{2F4805F4-6D0A-4B1D-AB6F-DBEB409D8D16}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
