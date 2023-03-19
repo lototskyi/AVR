@@ -79,11 +79,21 @@ void LCD_init(void) {
 	sendByte(0b00000001, 0); /* Clear display screen*/
 	_delay_ms(2);
 	
-	setled();
+	backlightOn();
 	setwrite();
 }
 
 void clearLCD() {
 	sendByte(0b00000001, 0);
 	_delay_us(1500);
+}
+
+void turnBacklightOn()
+{
+	backlightOn();
+}
+
+void turnBacklightOff()
+{
+	backlightOff();
 }
