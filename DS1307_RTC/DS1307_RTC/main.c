@@ -48,10 +48,10 @@ int main(void)
 		
 		USART_Transmit(date / 10 + 0x30); //transform numbers to code of numbers
 		USART_Transmit(date % 10 + 0x30);
-		USART_Transmit(".");
+		USART_Transmit('.');
 		USART_Transmit(month / 10 + 0x30);
 		USART_Transmit(month % 10 + 0x30);
-		USART_Transmit(".");
+		USART_Transmit('.');
 		USART_Transmit(year / 10 + 0x30);
 		USART_Transmit(year % 10 + 0x30);
 		USART_Transmit(' ');
