@@ -20,3 +20,7 @@
 
 #User Specific Files
 *.atsuo
+
+#Proteus temporary files
+*.workspace
+**/Project Backups/
