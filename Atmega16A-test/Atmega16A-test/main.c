@@ -10,9 +10,21 @@ int main(void)
     while (1) 
     {
 		PORTA |= (1 << PINA0);
-		_delay_ms(500);
+		_delay_ms(100);
 		PORTA &= ~(1 << PINA0);
-		_delay_ms(500);
+		_delay_ms(100);
+        PORTA |= (1 << PINA0);
+        _delay_ms(100);
+        PORTA &= ~(1 << PINA0);
+        _delay_ms(100);
+        PORTA |= (1 << PINA0);
+        _delay_ms(100);
+        PORTA &= ~(1 << PINA0);
+        _delay_ms(100);
+        PORTA |= (1 << PINA0);
+        _delay_ms(2000);
+        PORTA &= ~(1 << PINA0);
+        _delay_ms(2000);
     }
 }
 
