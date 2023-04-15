@@ -1,114 +1,63 @@
 //LED 7-Segment Display OC
 
-#define F_CPU 8000000L
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
+#include "main.h"
 
+unsigned char sec, min, hour, day, date, month, year;
 unsigned int i;
-unsigned char R1 = 0, R2 = 0;
-
-void segchar(unsigned char seg)
-{
-    //    1 2 3 4 5 6 7 8
-    //0b|dp|g|f|e|d|c|b|a|
-    
-    switch (seg)
-    {
-        case 1:	PORTD = 0b00000110; break;
-        case 2:	PORTD = 0b01011011;	break;
-        case 3:	PORTD = 0b01001111;	break;
-        case 4:	PORTD = 0b01100110;	break;
-        case 5:	PORTD = 0b01101101;	break;
-        case 6:	PORTD = 0b01111101;	break;
-        case 7:	PORTD = 0b00000111;	break;
-        case 8:	PORTD = 0b01111111;	break;
-        case 9:	PORTD = 0b01101111;	break;
-        case 0:	PORTD = 0b00111111;	break;
-    }
-}
-
-void timer_ini(void)
-{
-    TCCR1B |= (1 << WGM12); //CTC mode (compare mode)
-    TIMSK1 |= (1 << OCIE1A); //bit for allowing interruption of the first counter by matching OCR1A(H and L)
-    
-    OCR1AH = 0b00001111;
-    OCR1AL = 0b01000010;
-
-    TCCR1B |= (1 << CS11);//set divider 8
-}
-
-unsigned char n_count = 0;
-
-ISR (TIMER1_COMPA_vect)
-{
-    
-    if (n_count == 0) {PORTB &= ~(1 << PINB0); PORTB |= (1 << PINB1); segchar(R1);}
-    if (n_count == 1) {PORTB &= ~(1 << PINB1); PORTB |= (1 << PINB0); segchar(R2);}
-
-    n_count++;
-    
-    if (n_count > 1) n_count = 0;
-}
-
-void ledprint(unsigned int number)
-{
-    R1 = number / 10;
-    R2 = number % 10;
-}
 
 int main(void)
 {
-    unsigned char butcount = 0, butstate = 0;
+    I2C_Init();
     
     timer_ini();
     
     DDRD = 0xFF; // output
-    DDRB = 0b00001111;
-    
+    DDRB = 0b00011111;
+    DDRC &= ~(1 << DDC3);
+    PORTC &= ~(1 << PORTC3);
     PORTD = 0b00000000;
     PORTB = 0b00100000; // pull-up resistor on pin0
 
+    init_PWM_timer();
+
     sei(); // set global interruption
 
-    //ledprint(97);
+    OCR2A = 150;
+
+    I2C_StartCondition();
+    I2C_SendByte(0b11010000);
+    I2C_SendByte(7); //go to address 0x07
+    I2C_SendByte(0b00010000); // SQWE on
+    I2C_StopCondition();
 
     while (1)
     {
-        for (i = 0; i < 100; i++)
-        {
-            while (butstate == 0)
-            {
-                if (!(PINB & 0b00100000))
-                {
-                    if (butcount < 5)
-                    {
-                        butcount++;
-                    }
-                    else
-                    {
-                        i = 0;
-                    }
-                    
-                }
-                else
-                {
-                    if (butcount > 0)
-                    {
-                        butcount--;
-                    }
-                    else
-                    {
-                        butstate = 1;
-                    }
-                }
-            }
-            
-            ledprint(i);
-            _delay_ms(500);
-            butstate = 0;
-        }
+        //read time
+        
+        I2C_SendByteByADDR(0, 0b11010000); // got to address 0x00
+        _delay_ms(100);
+        
+        I2C_StartCondition();
+        I2C_SendByte(0b11010001); //send bit READ
+        sec = I2C_ReadByte();
+        min = I2C_ReadByte();
+        hour = I2C_ReadByte();
+        day = I2C_ReadByte();
+        date = I2C_ReadByte();
+        month = I2C_ReadByte();
+        year = I2C_ReadLastByte();
+        I2C_StopCondition();
+        
+        sec = RTC_ConvertToDec(sec);
+        min = RTC_ConvertToDec(min);
+        hour = RTC_ConvertToDec(hour);
+        day = RTC_ConvertToDec(day);
+        date = RTC_ConvertToDec(date);
+        month = RTC_ConvertToDec(month);
+        year = RTC_ConvertToDec(year);
+        
+        ledprint(hour * 100 + min);
+        _delay_ms(50);
     }
 }
 
