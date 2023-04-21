@@ -3,7 +3,7 @@
 
 #include "main.h"
 
-void ledprint(unsigned int number);
+void ledprint(unsigned int number, unsigned int cm);
 void timer_ini(void);
 
 

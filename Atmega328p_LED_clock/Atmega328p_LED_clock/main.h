@@ -12,5 +12,9 @@
 #include "led.h"
 #include "twi.h"
 #include "RTC.h"
+#include "adc.h"
+#include "DS18B20.h"
+
+unsigned int adc_value, adc_counter, adc_tmp;
 
 #endif /* MAIN_H_ */

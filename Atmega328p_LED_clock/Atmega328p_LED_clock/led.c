@@ -2,6 +2,12 @@
 
 unsigned char R1 = 0, R2 = 0, R3 = 0, R4 = 0;
 unsigned char n_count = 0;
+unsigned char clockmode;
+
+#define MODETIMEVIEW 100
+#define MODETEMPERVIEW 101
+#define MODEDATEVIEW 102
+#define MODEDAYVIEW 103
 
 void segchar(unsigned char seg)
 {
@@ -20,6 +26,9 @@ void segchar(unsigned char seg)
         case 8:	PORTD = 0b01111111;	break;
         case 9:	PORTD = 0b01101111;	break;
         case 0:	PORTD = 0b00111111;	break;
+        case 10: PORTD = 0b01000000; break; // -
+        case 11: PORTD = 0b00000000; break; // " "
+        case 12: PORTD = 0b00111001; break; // C
     }
 }
 
@@ -28,14 +37,16 @@ void timer_ini(void)
     TCCR1B |= (1 << WGM12); //CTC mode (compare mode)
     TIMSK1 |= (1 << OCIE1A); //bit for allowing interruption of the first counter by matching OCR1A(H and L)
     
-    OCR1AH = 0b00001111;
-    OCR1AL = 0b01000010;
+    OCR1AH = 0b00000111;
+    OCR1AL = 0b01100010;
 
     TCCR1B |= (1 << CS11);//set divider 8
 }
 
-void ledprint(unsigned int number)
+void ledprint(unsigned int number, unsigned int cm)
 {
+    clockmode = cm;
+    
     R1 = number % 10;
     R2 = number % 100 / 10;
     R3 = number % 1000 / 100;
@@ -44,21 +55,55 @@ void ledprint(unsigned int number)
 
 ISR (TIMER1_COMPA_vect)
 {
-    if (n_count == 0) {PORTB &= ~((1 << PORTB1) | (1 << PORTB2) | (1 << PORTB4)); PORTB |= (1 << PORTB0); segchar(R1);}
-    if (n_count == 1) {PORTB &= ~((1 << PORTB0) | (1 << PORTB2) | (1 << PORTB4)); PORTB |= (1 << PORTB1); segchar(R2);}
+    if (n_count == 0) {
+        PORTB &= ~((1 << PORTB1) | (1 << PORTB2) | (1 << PORTB4)); 
+        PORTB |= (1 << PORTB0);
+        if (clockmode == MODEDAYVIEW) {
+            segchar(10); // -
+        } else {
+            segchar(R1);
+        }
+        
+    }
+    
+    if (n_count == 1) {
+        PORTB &= ~((1 << PORTB0) | (1 << PORTB2) | (1 << PORTB4)); 
+        PORTB |= (1 << PORTB1); segchar(R2);
+        
+        if (clockmode == MODETEMPERVIEW) {
+            PORTD |= (1 << PORTD7);
+        }
+    }
     
     if (n_count == 2) {
-        PORTB &= ~((1 << PORTB1) | (1 << PORTB0) | (1 << PORTB4)); 
+        PORTB &= ~((1 << PORTB1) | (1 << PORTB0) | (1 << PORTB4));
         PORTB |= (1 << PORTB2); 
-        segchar(R3);
         
-        if (!(PINC & (1 << PORTC3))) {
+        if (clockmode == MODEDAYVIEW) {
+            segchar(10); // -
+        } else {
+            segchar(R3);
+        }
+        
+        if (((!(PINC & (1 << PORTC3))) && clockmode == MODETIMEVIEW) || (clockmode == MODEDATEVIEW)) {
             PORTD |= (1 << PORTD7);
         }
         
     }
     
-    if (n_count == 3) {PORTB &= ~((1 << PORTB1) | (1 << PORTB0) | (1 << PORTB2)); PORTB |= (1 << PORTB4); segchar(R4);}
+    if (n_count == 3) {
+        PORTB &= ~((1 << PORTB1) | (1 << PORTB0) | (1 << PORTB2)); 
+        PORTB |= (1 << PORTB4);
+        
+        if (clockmode == MODETEMPERVIEW) {
+            segchar(12); // C
+        } else if (clockmode == MODEDAYVIEW) {
+            segchar(11); // " "
+        } else {
+            segchar(R4);
+        }
+    }
+    
     n_count++;
     
     if (n_count > 3) n_count = 0;

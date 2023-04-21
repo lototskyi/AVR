@@ -2,11 +2,19 @@
 
 #include "main.h"
 
+#define MODETIMEVIEW 100
+#define MODETEMPERVIEW 101
+#define MODEDATEVIEW 102
+#define MODEDAYVIEW 103
+
 unsigned char sec, min, hour, day, date, month, year;
 unsigned int i;
 
 int main(void)
 {
+    unsigned int tt = 0; //temperature
+    unsigned char clockmode = MODETIMEVIEW;
+    
     I2C_Init();
     
     timer_ini();
@@ -19,10 +27,11 @@ int main(void)
     PORTB = 0b00100000; // pull-up resistor on pin0
 
     init_PWM_timer();
-
+    ADC_Init();
+    
     sei(); // set global interruption
 
-    OCR2A = 150;
+    OCR2A = 7;
 
     I2C_StartCondition();
     I2C_SendByte(0b11010000);
@@ -35,7 +44,6 @@ int main(void)
         //read time
         
         I2C_SendByteByADDR(0, 0b11010000); // got to address 0x00
-        _delay_ms(100);
         
         I2C_StartCondition();
         I2C_SendByte(0b11010001); //send bit READ
@@ -56,8 +64,39 @@ int main(void)
         month = RTC_ConvertToDec(month);
         year = RTC_ConvertToDec(year);
         
-        ledprint(hour * 100 + min);
-        _delay_ms(50);
+        if (sec < 30 || sec > 41) {
+            clockmode = MODETIMEVIEW;
+        } else if (sec < 34) {
+            clockmode = MODETEMPERVIEW;
+        } else if (sec < 38) {
+            clockmode = MODEDAYVIEW;
+        } else {
+            clockmode = MODEDATEVIEW;
+        }
+        
+        tt = convertTemp(dt_check());
+        
+        if (adc_value < 80) {
+            OCR2A = 80 - adc_value;
+            } else {
+            OCR2A = 7;
+        }
+        
+        if (clockmode == MODETIMEVIEW) {
+            ledprint(hour * 100 + min, clockmode);
+        }
+        
+        if (clockmode == MODETEMPERVIEW) {
+            ledprint((tt >> 1) * 10 + ((tt % 2) * 5), clockmode);
+        }
+        
+        if (clockmode == MODEDAYVIEW) {
+            ledprint(day * 10, clockmode);
+        }
+        
+        if (clockmode == MODEDATEVIEW) {
+            ledprint(month + date * 100, clockmode);
+        }
     }
 }
 
