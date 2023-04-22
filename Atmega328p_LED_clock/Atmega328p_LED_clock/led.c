@@ -9,6 +9,11 @@ unsigned char clockmode;
 #define MODEDATEVIEW 102
 #define MODEDAYVIEW 103
 
+#define MODENONEEDIT 0
+#define MODEMINEDIT 1
+
+extern unsigned char clockeditmode;
+
 void segchar(unsigned char seg)
 {
     //    1 2 3 4 5 6 7 8
@@ -58,8 +63,15 @@ ISR (TIMER1_COMPA_vect)
     if (n_count == 0) {
         PORTB &= ~((1 << PORTB1) | (1 << PORTB2) | (1 << PORTB4)); 
         PORTB |= (1 << PORTB0);
+        
+        if ((clockeditmode == MODEMINEDIT) && !(PINC & (1 << PORTC3))) {
+            PORTB &= ~(1 << PORTB0);
+        }
+        
         if (clockmode == MODEDAYVIEW) {
             segchar(10); // -
+        } else if (clockmode == MODETEMPERVIEW) {
+            segchar(12); // C
         } else {
             segchar(R1);
         }
@@ -68,24 +80,26 @@ ISR (TIMER1_COMPA_vect)
     
     if (n_count == 1) {
         PORTB &= ~((1 << PORTB0) | (1 << PORTB2) | (1 << PORTB4)); 
-        PORTB |= (1 << PORTB1); segchar(R2);
+        PORTB |= (1 << PORTB1); 
         
-        if (clockmode == MODETEMPERVIEW) {
-            PORTD |= (1 << PORTD7);
+        if ((clockeditmode == MODEMINEDIT) && !(PINC & (1 << PORTC3))) {
+            PORTB &= ~(1 << PORTB1);
         }
+        
+        segchar(R2);
     }
     
     if (n_count == 2) {
         PORTB &= ~((1 << PORTB1) | (1 << PORTB0) | (1 << PORTB4));
         PORTB |= (1 << PORTB2); 
-        
+
         if (clockmode == MODEDAYVIEW) {
             segchar(10); // -
         } else {
             segchar(R3);
         }
-        
-        if (((!(PINC & (1 << PORTC3))) && clockmode == MODETIMEVIEW) || (clockmode == MODEDATEVIEW)) {
+
+        if (((!(PINC & (1 << PORTC3))) && clockmode == MODETIMEVIEW) || (clockmode == MODEDATEVIEW) || (clockmode == MODETEMPERVIEW)) {
             PORTD |= (1 << PORTD7);
         }
         
@@ -95,9 +109,7 @@ ISR (TIMER1_COMPA_vect)
         PORTB &= ~((1 << PORTB1) | (1 << PORTB0) | (1 << PORTB2)); 
         PORTB |= (1 << PORTB4);
         
-        if (clockmode == MODETEMPERVIEW) {
-            segchar(12); // C
-        } else if (clockmode == MODEDAYVIEW) {
+        if (clockmode == MODEDAYVIEW) {
             segchar(11); // " "
         } else {
             segchar(R4);

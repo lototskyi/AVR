@@ -14,7 +14,10 @@
 #include "RTC.h"
 #include "adc.h"
 #include "DS18B20.h"
+#include "button.h"
 
 unsigned int adc_value, adc_counter, adc_tmp;
+unsigned int button_cnt;
+unsigned char clockeditmode;
 
 #endif /* MAIN_H_ */
