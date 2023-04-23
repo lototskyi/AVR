@@ -23,15 +23,16 @@
 #define MODEALARMHOUREDIT 8
 #define MODEALARMMINEDIT 9
 
-unsigned char sec, min, hour, day, date, month, year;
-unsigned int i;
+unsigned char sec, min, hour, day, date, month, year, alarmhour, alarmmin;
+unsigned char i;
 
 void port_init() 
 {
      DDRD = 0xFF; // output
      DDRB = 0b00011111;
      DDRC &= ~(1 << DDC3);
-     PORTC &= ~(1 << PORTC3);
+     DDRC |= (1 << DDC1); // alarm
+     PORTC &= ~((1 << PORTC3) | (1 << PORTC1));
      PORTD = 0b00000000;
      PORTB = 0b00100000; // pull-up resistor on pin0
 }
@@ -136,13 +137,37 @@ void ModifyRTC()
         
             break;
         case MODEALARMHOUREDIT: //alarm hour
+            if (alarmhour < 23) {
+                EEPROM_write(2, alarmhour + 1);
+            } else {
+                EEPROM_write(2, 0);
+            }
             break;
         case MODEALARMMINEDIT: //alarm mins
+        
+            if (alarmmin < 59) {
+                EEPROM_write(3, alarmmin + 1);
+            } else {
+                EEPROM_write(3, 0);
+            }
+        
             break;
 
     }
     
     I2C_StopCondition();
+}
+
+void alarm()
+{
+    if (sec % 4 != 0) PORTC |= (1 << PORTC1);
+    _delay_ms(15);
+    PORTC &= ~(1 << PORTC1);
+}
+
+void alarm_off()
+{
+    PORTC &= ~(1 << PORTC1);
 }
 
 int main(void)
@@ -151,8 +176,15 @@ int main(void)
     unsigned char clockmode = MODETIMEVIEW;
     clockeditmode = MODENONEEDIT;
     clockincmode = MODENOINC;
-    
+    alarmcmp = 0;
     button_cnt = 0;
+    alarmbeep = 0;
+    
+    if (EEPROM_read(1) > 1) EEPROM_write(1, 0); //check if correct data were written - 1/0
+    alarmmode = EEPROM_read(1);
+    
+    if (EEPROM_read(2) > 23) EEPROM_write(2, 0); //alarm hours 
+    if (EEPROM_read(3) > 59) EEPROM_write(3, 0); //alarm minutes
     
     I2C_Init();
     
@@ -210,6 +242,21 @@ int main(void)
         
         tt = convertTemp(dt_check());
         
+        alarmhour = EEPROM_read(2);
+        alarmmin = EEPROM_read(3);
+        
+        if (alarmmin == min && alarmhour == hour && clockeditmode == MODENONEEDIT) {
+            
+            if (alarmcmp == 0) {
+                alarmbeep = 1;
+            }
+            
+            alarmcmp = 1;
+            
+        } else {
+            alarmcmp = 0;
+        }
+        
         if (clockeditmode != MODENONEEDIT && clockincmode == MODEINC) {
             ModifyRTC();
             clockincmode = MODENOINC;
@@ -217,7 +264,7 @@ int main(void)
         
         if (adc_value < 80) {
             OCR2A = 80 - adc_value;
-            } else {
+        } else {
             OCR2A = 7;
         }
         
@@ -248,13 +295,13 @@ int main(void)
         } else if (clockeditmode == MODEYEAREDIT) {
             ledprint(year + 2000, MODEYEARVIEW);
         } else if (clockeditmode == MODEALARMMINEDIT || clockeditmode == MODEALARMHOUREDIT) {
-            ledprint(0, MODETIMEVIEW);
+            ledprint(alarmhour * 100 + alarmmin, MODETIMEVIEW);
         }
-        
- 
+
+        if (alarmcmp == 1 && alarmbeep == 1) {
+            alarm();
+        } else {
+            alarm_off();
+        }
     }
 }
-
-
-
-

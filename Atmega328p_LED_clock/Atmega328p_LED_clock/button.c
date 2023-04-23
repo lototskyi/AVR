@@ -1,7 +1,7 @@
 #include "button.h"
 
 extern unsigned int button_cnt;
-extern unsigned char clockeditmode, clockincmode;
+extern unsigned char clockeditmode, clockincmode, alarmbeep;
 unsigned char buttonstat = 0, cnt = 0;
 
 #define MODENONEEDIT 0
@@ -47,6 +47,10 @@ ISR (TIMER0_OVF_vect)
         
         if (button_cnt > 3 && button_cnt <= 60) { //debouncing
             clockincmode = MODEINC;
+            
+            if (clockeditmode == MODENONEEDIT) {
+                alarmbeep = 0; //alarm off
+            }
         }
         
         button_cnt = 0;
