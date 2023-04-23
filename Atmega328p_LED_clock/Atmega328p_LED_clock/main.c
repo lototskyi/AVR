@@ -7,6 +7,7 @@
 #define MODEDATEVIEW 102
 #define MODEDAYVIEW 103
 #define MODEYEARVIEW 104
+#define MODESECVIEW 105
 
 #define MODEINC 201
 #define MODENOINC 202
@@ -14,12 +15,13 @@
 #define MODENONEEDIT 0
 #define MODEHOUREDIT 1
 #define MODEMINEDIT 2
-#define MODEDATEEDIT 3
-#define MODEMONTHEDIT 4
-#define MODEYEAREDIT 5
-#define MODEDAYEDIT 6
-#define MODEALARMHOUREDIT 7
-#define MODEALARMMINEDIT 8
+#define MODESECEDIT 3
+#define MODEDATEEDIT 4
+#define MODEMONTHEDIT 5
+#define MODEYEAREDIT 6
+#define MODEDAYEDIT 7
+#define MODEALARMHOUREDIT 8
+#define MODEALARMMINEDIT 9
 
 unsigned char sec, min, hour, day, date, month, year;
 unsigned int i;
@@ -61,6 +63,11 @@ void ModifyRTC()
                 I2C_SendByte(RTC_ConvertFromBinDec(0));
             }
 
+            break;
+        case MODESECEDIT: //sec
+            
+            I2C_SendByte(0);
+            I2C_SendByte(RTC_ConvertFromBinDec(0));
             break;
         case MODEDATEEDIT: //date
             
@@ -232,6 +239,8 @@ int main(void)
             }
         } else if (clockeditmode == MODEMINEDIT || clockeditmode == MODEHOUREDIT) {
             ledprint(hour * 100 + min, MODETIMEVIEW);
+        } else if (clockeditmode == MODESECEDIT) {
+            ledprint(sec, MODESECVIEW);
         } else if (clockeditmode == MODEDATEEDIT || clockeditmode == MODEMONTHEDIT) {
             ledprint(date * 100 + month, MODEDATEVIEW);
         } else if (clockeditmode == MODEDAYEDIT) {

@@ -9,16 +9,18 @@ unsigned char clockmode;
 #define MODEDATEVIEW 102
 #define MODEDAYVIEW 103
 #define MODEYEARVIEW 104
+#define MODESECVIEW 105
 
 #define MODENONEEDIT 0
 #define MODEHOUREDIT 1
 #define MODEMINEDIT 2
-#define MODEDATEEDIT 3
-#define MODEMONTHEDIT 4
-#define MODEYEAREDIT 5
-#define MODEDAYEDIT 6
-#define MODEALARMHOUREDIT 7
-#define MODEALARMMINEDIT 8
+#define MODESECEDIT 3
+#define MODEDATEEDIT 4
+#define MODEMONTHEDIT 5
+#define MODEYEAREDIT 6
+#define MODEDAYEDIT 7
+#define MODEALARMHOUREDIT 8
+#define MODEALARMMINEDIT 9
 
 extern unsigned char clockeditmode;
 
@@ -111,6 +113,8 @@ ISR (TIMER1_COMPA_vect)
 
         if (clockmode == MODEDAYVIEW) {
             segchar(10); // -
+        } else if (clockmode == MODESECVIEW) {
+            segchar(11); // " "
         } else if (
             (clockeditmode == MODEHOUREDIT || clockeditmode == MODEDATEEDIT || 
             clockeditmode == MODEYEAREDIT || clockeditmode == MODEALARMHOUREDIT) && 
@@ -131,7 +135,7 @@ ISR (TIMER1_COMPA_vect)
         PORTB &= ~((1 << PORTB1) | (1 << PORTB0) | (1 << PORTB2)); 
         PORTB |= (1 << PORTB4);
         
-        if (clockmode == MODEDAYVIEW) {
+        if (clockmode == MODEDAYVIEW || clockmode == MODESECVIEW) {
             segchar(11); // " "
         } else if (
             (clockeditmode == MODEHOUREDIT || clockeditmode == MODEDATEEDIT || 
