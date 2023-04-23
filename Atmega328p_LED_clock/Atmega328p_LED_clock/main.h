@@ -18,6 +18,6 @@
 
 unsigned int adc_value, adc_counter, adc_tmp;
 unsigned int button_cnt;
-unsigned char clockeditmode;
+unsigned char clockeditmode, clockincmode;
 
 #endif /* MAIN_H_ */

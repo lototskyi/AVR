@@ -8,9 +8,17 @@ unsigned char clockmode;
 #define MODETEMPERVIEW 101
 #define MODEDATEVIEW 102
 #define MODEDAYVIEW 103
+#define MODEYEARVIEW 104
 
 #define MODENONEEDIT 0
-#define MODEMINEDIT 1
+#define MODEHOUREDIT 1
+#define MODEMINEDIT 2
+#define MODEDATEEDIT 3
+#define MODEMONTHEDIT 4
+#define MODEYEAREDIT 5
+#define MODEDAYEDIT 6
+#define MODEALARMHOUREDIT 7
+#define MODEALARMMINEDIT 8
 
 extern unsigned char clockeditmode;
 
@@ -64,16 +72,20 @@ ISR (TIMER1_COMPA_vect)
         PORTB &= ~((1 << PORTB1) | (1 << PORTB2) | (1 << PORTB4)); 
         PORTB |= (1 << PORTB0);
         
-        if ((clockeditmode == MODEMINEDIT) && !(PINC & (1 << PORTC3))) {
-            PORTB &= ~(1 << PORTB0);
+        if (
+            (clockeditmode == MODEMINEDIT || clockeditmode == MODEMONTHEDIT || 
+            clockeditmode == MODEYEAREDIT || clockeditmode == MODEALARMMINEDIT) && 
+            !(PINC & (1 << PORTC3))
+        ) { //blink by SQ signal
+            segchar(11);
+        } else {
+            segchar(R1);
         }
         
         if (clockmode == MODEDAYVIEW) {
             segchar(10); // -
         } else if (clockmode == MODETEMPERVIEW) {
             segchar(12); // C
-        } else {
-            segchar(R1);
         }
         
     }
@@ -82,11 +94,15 @@ ISR (TIMER1_COMPA_vect)
         PORTB &= ~((1 << PORTB0) | (1 << PORTB2) | (1 << PORTB4)); 
         PORTB |= (1 << PORTB1); 
         
-        if ((clockeditmode == MODEMINEDIT) && !(PINC & (1 << PORTC3))) {
-            PORTB &= ~(1 << PORTB1);
-        }
-        
         segchar(R2);
+        
+        if (
+            (clockeditmode == MODEMINEDIT || clockeditmode == MODEMONTHEDIT ||
+            clockeditmode == MODEYEAREDIT || clockeditmode == MODEDAYEDIT ||
+            clockeditmode == MODEALARMMINEDIT) && !(PINC & (1 << PORTC3))
+        ) {
+            segchar(11);
+        }
     }
     
     if (n_count == 2) {
@@ -95,6 +111,12 @@ ISR (TIMER1_COMPA_vect)
 
         if (clockmode == MODEDAYVIEW) {
             segchar(10); // -
+        } else if (
+            (clockeditmode == MODEHOUREDIT || clockeditmode == MODEDATEEDIT || 
+            clockeditmode == MODEYEAREDIT || clockeditmode == MODEALARMHOUREDIT) && 
+            !(PINC & (1 << PORTC3))
+        ) {
+            segchar(11);
         } else {
             segchar(R3);
         }
@@ -111,6 +133,12 @@ ISR (TIMER1_COMPA_vect)
         
         if (clockmode == MODEDAYVIEW) {
             segchar(11); // " "
+        } else if (
+            (clockeditmode == MODEHOUREDIT || clockeditmode == MODEDATEEDIT || 
+            clockeditmode == MODEYEAREDIT || clockeditmode == MODEALARMHOUREDIT) && 
+            !(PINC & (1 << PORTC3))
+        ) {
+            segchar(11);
         } else {
             segchar(R4);
         }
