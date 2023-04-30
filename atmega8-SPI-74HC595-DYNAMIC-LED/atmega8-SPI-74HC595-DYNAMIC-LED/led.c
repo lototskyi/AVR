@@ -31,8 +31,11 @@ void timer_ini(void)
     TCCR1B |= (1 << WGM12); //CTC mode (compare mode)
     TIMSK |= (1 << OCIE1A); //bit for allowing interruption of the first counter by matching OCR1A(H and L)
     
-    OCR1AH = 0b000001111;
-    OCR1AL = 0b01100010;
+    //OCR1AH = 0b000001111;
+    //OCR1AL = 0b01100010;
+    
+    OCR1AH = 0b00001111;
+    OCR1AL = 0b01000010;
 
     TCCR1B |= (1 << CS11);//set divider 8
 }
@@ -74,7 +77,7 @@ ISR (TIMER1_COMPA_vect)
         PORTB |= (1 << PORTB2);
         PORTB &= ~((1 << PORTB2));
     }
-    
+    //
     if (n_count == 2) {
         segchar(R3);
         while(!(SPSR & (1<<SPIF))) //waiting for data to be transmitted

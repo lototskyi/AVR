@@ -15,10 +15,10 @@ int main(void)
     timer_ini();
     sei();
     
-    SPDR = 0b00000000;
-    
-    while(!(SPSR & (1<<SPIF))) //waiting for data to be transmitted
-    ;
+    //SPDR = 0b00000000;
+    //
+    //while(!(SPSR & (1<<SPIF))) //waiting for data to be transmitted
+    //;
     
     SPDR = 0b00000000;
     
@@ -30,17 +30,12 @@ int main(void)
     PORTB &= ~((1 << PORTB2));
     _delay_ms(500);
 
-   
-
     while (1)
     {
-        
         for (i = 0; i < 10000; i++) {
             ledprint(i);
-            _delay_ms(500);
+            _delay_ms(10);
         }
-
-        
     }
 }
 
