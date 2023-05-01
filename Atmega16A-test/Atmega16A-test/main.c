@@ -20,19 +20,19 @@ int main(void)
 		//_delay_ms(100);
 		//PORTA &= ~(1 << PORTA0);
 		//_delay_ms(100);
-        //PORTA |= (1 << PORTA0);
-        //_delay_ms(100);
-        //PORTA &= ~(1 << PORTA0);
-        //_delay_ms(100);
-        //PORTA |= (1 << PORTA0);
-        //_delay_ms(100);
-        //PORTA &= ~(1 << PORTA0);
-        //_delay_ms(100);
-        //PORTA |= (1 << PORTA0);
-        //_delay_ms(2000);
-        //PORTA &= ~(1 << PORTA0);
-        //_delay_ms(2000);
-        
+		//PORTA |= (1 << PORTA0);
+		//_delay_ms(100);
+		//PORTA &= ~(1 << PORTA0);
+		//_delay_ms(100);
+		//PORTA |= (1 << PORTA0);
+		//_delay_ms(100);
+		//PORTA &= ~(1 << PORTA0);
+		//_delay_ms(100);
+		//PORTA |= (1 << PORTA0);
+		//_delay_ms(2000);
+		//PORTA &= ~(1 << PORTA0);
+		//_delay_ms(2000);
+		
         
         if (pwm_state == 0) {
             OCR0++;
