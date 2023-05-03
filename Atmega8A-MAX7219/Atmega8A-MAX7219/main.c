@@ -45,7 +45,7 @@ void number_7219(volatile long n)
     clear_7219();
     
     if (n == 0) {
-        send_7219(0x01, 0);
+        send_7219(0x00, 0);
         return;
     }
     
