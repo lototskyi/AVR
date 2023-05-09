@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "lcdtwi.h"
 #include "twi.h"
+#include "lcdtwi.h"
 
 #endif /* MAIN_H_ */

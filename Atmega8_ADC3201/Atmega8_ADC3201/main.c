@@ -3,6 +3,8 @@
 void port_ini(void) {
     PORTD = 0x00;
     DDRD = 0xFF;
+    DDRC &= ~(1 << PORTC4) | (1 << PORTC5);
+    PORTC |= (1 << PORTC4) | (1 << PORTC5);
 }
 
 void SPI_init() {

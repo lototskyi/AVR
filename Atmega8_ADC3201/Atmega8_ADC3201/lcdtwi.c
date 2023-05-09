@@ -67,8 +67,8 @@ void lcd_num(uint8_t num, uint8_t line, uint8_t pos) {
 
 void LCD_init(void) {
 	_delay_ms(20); //waiting
-
-	sendHalfByte(0b00000010); /* send for 4 bit initialization of LCD  */
+    
+    sendHalfByte(0b00000010); /* send for 4 bit initialization of LCD  */
 	_delay_ms(1);
 	sendByte(0b00101000, 0); // 4bit mode, 2 lines (N=1)
 	_delay_ms(1);
@@ -79,8 +79,9 @@ void LCD_init(void) {
 	sendByte(0b00000001, 0); /* Clear display screen*/
 	_delay_ms(2);
 	
-	backlightOn();
+	//backlightOn();
 	setwrite();
+    backlightOn();
 }
 
 void clearLCD() {
