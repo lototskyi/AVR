@@ -9,5 +9,6 @@
 #include <stdlib.h>
 
 #include "TM1638.h"
+#include "usart.h"
 
 #endif /* MAIN_H_ */
