@@ -96,3 +96,11 @@ void strLCD80(char str1[]) {
         sendCharLCD(str1[n]);
     }
 }
+
+void createCustomCharacter(unsigned char *Pattern, const char Location)
+{
+    int i=0;
+    sendByte(0x40 + (Location * 8), 0); //Send the Address of CGRAM
+    for (i=0; i<8; i++)
+        sendByte(Pattern[i], 1); //Pass the bytes of pattern on LCD
+}

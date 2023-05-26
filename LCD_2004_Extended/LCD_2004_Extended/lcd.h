@@ -9,6 +9,7 @@ void strLCD(char str1[]);
 void strLCD80(char str1[]); //fill in the full LCD (80 symbols)
 void clearLCD();
 void sendCharLCD(unsigned char c);
+void createCustomCharacter(unsigned char *Pattern, const char Location);
 
 #define e1 PORTD |= 0b00001000; //set E = 1
 #define e0 PORTD &= 0b11110111; //set E = 0
