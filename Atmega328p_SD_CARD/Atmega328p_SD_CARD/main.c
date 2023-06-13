@@ -29,7 +29,7 @@ void SPI_SendByte(unsigned char byte)
     for (i = 0; i < 8; i++) {
         if ((byte & 0x80) == 0x00) {
             PORTB &= ~(1 << MOSI);
-        } else {
+            } else {
             PORTB |= (1 << MOSI);
         }
         
@@ -47,9 +47,9 @@ unsigned char SPI_ReceiveByte()
     
     for (i = 0; i < 8; i++) {
         PORTB |= (1 << SCK);
-         
+        
         result <<= 1;
-         
+        
         if ((PINB & (1 << MISO)) != 0x00) {
             result = result | 0x01;
         }
@@ -68,7 +68,7 @@ unsigned char SD_cmd(char dt0, char dt1, char dt2, char dt3, char dt4, char dt5)
     SPI_SendByte(dt1); //argument
     SPI_SendByte(dt2); //
     SPI_SendByte(dt3);
-    SPI_SendByte(dt4); 
+    SPI_SendByte(dt4);
     SPI_SendByte(dt5); //checksum
     
     cnt = 0;
@@ -81,7 +81,7 @@ unsigned char SD_cmd(char dt0, char dt1, char dt2, char dt3, char dt4, char dt5)
     return result;
 }
 
-unsigned char SD_Init() 
+unsigned char SD_Init()
 {
     unsigned char i, temp;
     long int cnt;
@@ -127,24 +127,24 @@ unsigned char SD_WriteBlock(char* bf, unsigned char dt1, unsigned char dt2, unsi
         SPI_SendByte(bf[cnt]);
     }
     
-     SPI_SendByte(0xFF);
-     SPI_SendByte(0xFF); // checksum
-     
-     result = SPI_ReceiveByte();
-     
-     if ((result & 0x05) != 0x05) return 4; //datasheet 111
-     
-     cnt = 0;
-     
-     do //white for result
-     {
-         result = SPI_ReceiveByte();
-         cnt++;
-     } while ((result != 0xFF) && cnt < 0xFFFF);
-     
-     if (cnt >= 0xFFFF) return 5;
-     
-     return 0;
+    SPI_SendByte(0xFF);
+    SPI_SendByte(0xFF); // checksum
+    
+    result = SPI_ReceiveByte();
+    
+    if ((result & 0x05) != 0x05) return 4; //datasheet 111
+    
+    cnt = 0;
+    
+    do //white for result
+    {
+        result = SPI_ReceiveByte();
+        cnt++;
+    } while ((result != 0xFF) && cnt < 0xFFFF);
+    
+    if (cnt >= 0xFFFF) return 5;
+    
+    return 0;
 }
 
 unsigned char SD_ReadBlock(char* bf, unsigned char dt1, unsigned char dt2, unsigned char dt3, unsigned char dt4)
@@ -181,9 +181,10 @@ unsigned char SD_ReadBlock(char* bf, unsigned char dt1, unsigned char dt2, unsig
 
 int main(void)
 {
-    unsigned char i;
     char str[10];
-    unsigned char result;
+    FATFS fs;
+    FRESULT res;
+    WORD s1;
     
     port_init();
     LCD_ini();
@@ -203,11 +204,21 @@ int main(void)
     
     _delay_ms(1000);
     
-    result = SD_Init();
+    //result = SD_Init();
+    clearLCD();
+    res = pf_mount(&fs);
+
+    setPos(0, 0);
+    sprintf(str, "%d", res);
+    strLCD(str);
+    
+    _delay_ms(2000);
     clearLCD();
     
+    res = pf_open("/123.txt");
+    
     setPos(0, 0);
-    sprintf(str, "%d", result);
+    sprintf(str, "%d", res);
     strLCD(str);
     
     //result = SD_WriteBlock(buffer, 0x00, 0x00, 0x04, 0x00); //write block from buffer
@@ -215,17 +226,17 @@ int main(void)
     //sprintf(str, "%d", result);
     //strLCD(str);
     
-    result = SD_ReadBlock(buffer2, 0x00, 0x00, 0x04, 0x00); //read block into buffer
-    setPos(0, 2);
-    sprintf(str, "%d", result);
-    strLCD(str);
+    //result = SD_ReadBlock(buffer2, 0x00, 0x00, 0x04, 0x00); //read block into buffer
+    //setPos(0, 2);
+    //sprintf(str, "%d", result);
+    //strLCD(str);
     
-    _delay_ms(1000);
-    
-    for (i = 0; i <= 22; i++) {
-        strLCD80(buffer2 + i * 20);
-        _delay_ms(1000);
-    }
+    //_delay_ms(1000);
+    //
+    //for (i = 0; i <= 22; i++) {
+        //strLCD80(buffer2 + i * 20);
+        //_delay_ms(1000);
+    //}
     
     //strLCD80(buffer);
     //_delay_ms(2000);
@@ -244,6 +255,7 @@ int main(void)
 
     }
 }
+
 
 
 
