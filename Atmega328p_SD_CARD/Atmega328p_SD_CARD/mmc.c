@@ -155,42 +155,42 @@ DSTATUS disk_initialize (void)
 	if (send_cmd(CMD0, 0) == 1) {			// Enter Idle state 
 		if (send_cmd(CMD8, 0x1AA) == 1) {	// SDv2 
 
- 	  		setPos(0,3);
- 	  		strLCD("SDv2");
+ 	  		//setPos(0,3);
+ 	  		//strLCD("SDv2");
 
 			for (n = 0; n < 4; n++) ocr[n] = rcv_spi();		// Get trailing return value of R7 resp 
-  			setPos(8,0);
-  			sprintf(str,"%02X",ocr[3]);
-  			strLCD(str);
-  			setPos(11,0);
-  			sprintf(str,"%02X",ocr[2]);
-  			strLCD(str);
-  			setPos(14,0);
-  			sprintf(str,"%02X",ocr[1]);
-  			strLCD(str);
-  			setPos(17,0);
-  			sprintf(str,"%02X",ocr[0]);
-  			strLCD(str);
+  			//setPos(8,0);
+  			//sprintf(str,"%02X",ocr[3]);
+  			//strLCD(str);
+  			//setPos(11,0);
+  			//sprintf(str,"%02X",ocr[2]);
+  			//strLCD(str);
+  			//setPos(14,0);
+  			//sprintf(str,"%02X",ocr[1]);
+  			//strLCD(str);
+  			//setPos(17,0);
+  			//sprintf(str,"%02X",ocr[0]);
+  			//strLCD(str);
 			if (ocr[2] == 0x01 && ocr[3] == 0xAA) {				// The card can work at vdd range of 2.7-3.6V 
- 	  		setPos(5,3);
- 	  		strLCD("AA01");
+ 	  		//setPos(5,3);
+ 	  		//strLCD("AA01");
 				for (tmr = 12000; tmr && send_cmd(ACMD41, 1UL << 30); tmr--) ;	// Wait for leaving idle state (ACMD41 with HCS bit) 
 				if (tmr && send_cmd(CMD58, 0) == 0) {		// Check CCS bit in the OCR 
- 			  		setPos(10,3);
- 			  		strLCD("CCS");
+ 			  		//setPos(10,3);
+ 			  		//strLCD("CCS");
 					for (n = 0; n < 4; n++) ocr[n] = rcv_spi();
-  					setPos(8,1);
-  					sprintf(str,"%02X",ocr[3]);
-  					strLCD(str);
-  					setPos(11,1);
-  					sprintf(str,"%02X",ocr[2]);
-  					strLCD(str);
-  					setPos(14,1);
-  					sprintf(str,"%02X",ocr[1]);
-  					strLCD(str);
-  					setPos(17,1);
-  					sprintf(str,"%02X",ocr[0]);
-  					strLCD(str);
+  					//setPos(8,1);
+  					//sprintf(str,"%02X",ocr[3]);
+  					//strLCD(str);
+  					//setPos(11,1);
+  					//sprintf(str,"%02X",ocr[2]);
+  					//strLCD(str);
+  					//setPos(14,1);
+  					//sprintf(str,"%02X",ocr[1]);
+  					//strLCD(str);
+  					//setPos(17,1);
+  					//sprintf(str,"%02X",ocr[0]);
+  					//strLCD(str);
 					ty = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2;	// SDv2 (HC or SC) 
 				}
 			}
