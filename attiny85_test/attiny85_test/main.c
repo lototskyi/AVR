@@ -56,7 +56,7 @@ int main(void)
     TCCR1 |= (1 << PWM1A) | (1 << COM1A1) | (1 << COM1A0);
     //TCCR1 |= (1 << CS13) | (1 << CS12) | (1 << CS11) | (1 << CS10); // prescale 16384
     GTCCR |= (1 << PWM1B) | (1 << COM1B1) | (1 << COM1B0); // PWM on OC1B
-    TCCR1 |= (1 << CS11) | (1 << CS10); // prescale 64
+    TCCR1 |= (1 << CS10);//(1 << CS11) | (1 << CS10);
     TCNT1 = 0;
     //TIMSK |= (1 << OCIE1A) | (1 << OCIE1B);
     OCR1A = 159;
@@ -64,8 +64,8 @@ int main(void)
     
     //sei();
     
-    unsigned char pwm_state_a = 0;
-    unsigned char pwm_state_b = 1;
+    //unsigned char pwm_state_a = 0;
+    //unsigned char pwm_state_b = 1;
     
     /* Replace with your application code */
     while (1)
@@ -84,35 +84,35 @@ int main(void)
         //PORTB &= ~(1 << PINB1);
         //}
         
-        if (pwm_state_a == 0) {
-            OCR1A++;
-            if (OCR1A > 254) {
-                pwm_state_a = 1;
-            }
-        }
-        
-        if (pwm_state_a == 1) {
-            OCR1A--;
-            if (OCR1A < 1) {
-                pwm_state_a = 0;
-            }
-        }
-        
-        if (pwm_state_b == 1) {
-            OCR1B++;
-            if (OCR1B > 254) {
-                pwm_state_b = 0;
-            }
-        }
-        
-        if (pwm_state_b == 0) {
-            OCR1B--;
-            if (OCR1B < 1) {
-                pwm_state_b = 1;
-            }
-        }
-        
-        _delay_ms(3);
+        //if (pwm_state_a == 0) {
+            //OCR1A++;
+            //if (OCR1A > 254) {
+                //pwm_state_a = 1;
+            //}
+        //}
+        //
+        //if (pwm_state_a == 1) {
+            //OCR1A--;
+            //if (OCR1A < 1) {
+                //pwm_state_a = 0;
+            //}
+        //}
+        //
+        //if (pwm_state_b == 1) {
+            //OCR1B++;
+            //if (OCR1B > 254) {
+                //pwm_state_b = 0;
+            //}
+        //}
+        //
+        //if (pwm_state_b == 0) {
+            //OCR1B--;
+            //if (OCR1B < 1) {
+                //pwm_state_b = 1;
+            //}
+        //}
+        //
+        //_delay_ms(3);
     }
 }
 
