@@ -17,6 +17,7 @@
 *.hex
 *.map
 *.srec
+*.componentinfo.xml
 
 #User Specific Files
 *.atsuo
