@@ -9,7 +9,7 @@
 ISR (TIMER1_OVF_vect) {
     timer_off;
     PORTC |= (1 << PC5);
-    _delay_ms(200);
+    _delay_ms(150);
     PORTC &= ~(1 << PC5);
     _delay_ms(100);
     timer_on;
@@ -28,7 +28,7 @@ int main(void)
     {
         for (int i = 0; i < 4; i++) {
             PORTC |= (1 << i);
-            _delay_ms(200);
+            _delay_ms(150);
             PORTC &= ~(1 << i);
         }
         _delay_ms(3);
