@@ -12,7 +12,7 @@ int main(void)
     unsigned int i = 0;
     
     SPI_init();
-    timer_ini();
+    timer_init();
     sei();
     
     //SPDR = 0b00000000;

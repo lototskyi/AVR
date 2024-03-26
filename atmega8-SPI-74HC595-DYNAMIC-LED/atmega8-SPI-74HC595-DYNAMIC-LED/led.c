@@ -26,7 +26,7 @@ void segchar(unsigned char seg)
     }
 }
 
-void timer_ini(void)
+void timer_init(void)
 {
     TCCR1B |= (1 << WGM12); //CTC mode (compare mode)
     TIMSK |= (1 << OCIE1A); //bit for allowing interruption of the first counter by matching OCR1A(H and L)

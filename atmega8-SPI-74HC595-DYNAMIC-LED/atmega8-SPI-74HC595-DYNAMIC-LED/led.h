@@ -4,7 +4,7 @@
 #include "main.h"
 
 void ledprint(unsigned int number);
-void timer_ini(void);
+void timer_init(void);
 
 
 
