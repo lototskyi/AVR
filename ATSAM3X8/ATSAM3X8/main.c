@@ -9,7 +9,7 @@
 #define LEDOFF (PIOB->PIO_CODR = PIO_PB27)
 #define LEDTOGGLE ((PIOB->PIO_ODSR & PIO_PB27) ? LEDOFF : LEDON)
 
-char TXBUFFER[64]; // UART PDC Transmit buffer
+char TXBUFFER[128]; // UART PDC Transmit buffer
 
 void sendText(char *text)
 {
