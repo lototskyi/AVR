@@ -187,8 +187,8 @@ void configure_uart(void)
     PIOA->PIO_PUER = PIO_PA8;
     PIOA->PIO_PUER = PIO_PA9;
     
-    // UART clock divider (around 115200)
-    UART->UART_BRGR = 84000000 / 115200 / 16;
+    // UART clock divider (around 19200)
+    UART->UART_BRGR = 84000000 / 19200 / 16;
     
     // UART mode 8n1
     UART->UART_MR = UART_MR_PAR_NO;
