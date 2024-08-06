@@ -32,7 +32,7 @@ int main(void)
         sendCharLCD('.');
         sendCharLCD(((unsigned char) (n * 10)) % 10 +0x30);
         sendCharLCD(((unsigned char) (n * 100)) % 10 +0x30);
-        _delay_ms(500);
+        _delay_ms(400);
     }
 }
 

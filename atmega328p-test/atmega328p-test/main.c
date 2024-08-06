@@ -14,7 +14,7 @@ int main(void)
     DDRD &= ~((1 << PORTD3) | (1 << PORTD4));
     PORTD |= (1 << PORTD3) | (1 << PORTD4);
     TCCR1A |= (1 << COM1A1) | (1 << WGM12) | (1 << WGM11) | (1 << WGM10);  //Set Timer Register
-    TCCR1B |= (1 << CS11);
+    TCCR1B |= (1 << CS10);
     OCR1A = 0;
     
     unsigned char pwm_state = 0;
