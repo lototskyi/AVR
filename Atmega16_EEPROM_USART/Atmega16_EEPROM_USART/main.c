@@ -9,7 +9,7 @@ int main(void)
     EEPROM_write(1, 120);
     EEPROM_write_word(3, 30000);
     EEPROM_write_dword(7, 0xFEDCBA98);
-    EEPROM_write_string(16, "Hello world!");
+    EEPROM_write_string(16, "Test string to write into EEPROM!");
     
     USART_ini(8);
     
